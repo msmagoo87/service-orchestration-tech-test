@@ -79,8 +79,8 @@ To deploy this application you will need a kubernetes cluster and kubectl, helm,
 ### Deployment
 
 Use `make deploy` to run a bash script which orchestrates the following:
-1. Using Helm to install redis.
-2. Using Helm to install the nginx-controller.
+1. Using Helm to install [redis](https://github.com/bitnami/charts/tree/main/bitnami/redis).
+2. Using Helm to install the [nginx-controller](https://github.com/kubernetes/ingress-nginx).
 3. Using kubectl and kustomize to deploy the application to the cluster.
 
 With your current kubectl context set to the cluster you wish to deploy to, simply run `make deploy` and the script will deploy what is necessary to run the application, as well as the application itself, as defined above.
@@ -88,3 +88,7 @@ With your current kubectl context set to the cluster you wish to deploy to, simp
 ### Infrastructure
 
 The infrastructure that is set up here is a deployment with 2 replicas which uses a config map and volume mount approach to mount the redis configuration file on to the pod for the service to use. The service retrieves this config file from `/etc/config/service.cfg`. We are also installing nginx to front the service with a load balancer ingress which can be wired up to aws ALB controller and externalDNS to manage an AWS Route53 Zone. And, of course, we are installing a redis cluster which sets up a single master and single replica.
+
+### Technology
+
+I used [colima](https://github.com/abiosoft/colima) for a local install of kubernetes and docker, which allowed me to build the image in my local docker cache and the colima kubernetes instance was able to pull from it. This means that I could just run `make build` to create my local image tagged `pw/crudservice:latest` and the [deployment](./k8s/deployment.yaml) which pulls that image will pull it successfully from my local docker without ever reaching out to a remote registry. In a real environment, the image would be hosted in ECR or the like and there would potentially be the need for `imagePullSecrets` or IAM permissions on nodegroups in the case of EKS.
