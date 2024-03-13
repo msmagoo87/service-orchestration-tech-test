@@ -5,7 +5,7 @@ from redis import Redis
 
 app = FastAPI()
 
-config = registry.resolve(Config().from_disk('./service.cfg'))
+config = registry.resolve(Config().from_disk('/etc/config/service.cfg'))
 REDIS_HOST = config['redis']['host']
 REDIS_PORT = config['redis']['port']
 r = Redis(host=REDIS_HOST, port=REDIS_PORT, db=0, decode_responses=True)

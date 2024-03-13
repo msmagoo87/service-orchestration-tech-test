@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: pw-crud
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: demo.pw.test
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: pw-crud
+                port:
+                  number: 8000
